@@ -8,7 +8,6 @@ module Carbuncle
 
     def detect
       return detect_by_cross_build if build.is_a?(MRuby::CrossBuild)
-
       detect_by_system
     end
 
@@ -16,12 +15,13 @@ module Carbuncle
 
     def detect_by_cross_build
       return windows_build if /mingw/ =~ env.cc.command
-
+      return emscripten_build if /emcc/ =~ env.cc.command
       raise 'The only cross-build available for Carbuncle is Windows with MingW.'
     end
 
     def detect_by_system
       return osx_build if /darwin/ =~ RUBY_PLATFORM
+
       return windows_build if /mswin|mingw|win32/ =~ RUBY_PLATFORM
 
       linux_build
@@ -37,6 +37,10 @@ module Carbuncle
       return Carbuncle::Win32::MinGW.new(env) if toolchains.include? 'gcc'
 
       raise 'Carbuncle allows only MinGW builds for Windows for now.'
+    end
+
+    def emscripten_build 
+      return Carbuncle::Web::Emscripten.new(env)
     end
 
     def linux_build

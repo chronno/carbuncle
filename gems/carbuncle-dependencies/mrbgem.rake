@@ -16,6 +16,7 @@ require_relative 'build_tools/build'
 require_relative 'build_tools/linux/gcc'
 require_relative 'build_tools/osx/clang'
 require_relative 'build_tools/win32/mingw'
+require_relative 'build_tools/web/emcc'
 
 # Dependencies
 require_relative 'build_tools/dependency'
@@ -35,7 +36,6 @@ MRuby::Gem::Specification.new('carbuncle-dependencies') do |spec|
   spec.summary = 'Handles all dependencies of Carbuncle'
 
   platform = Carbuncle::PlatformDetector.new(self).detect
-
   platform.build_dependencies
 
   spec.cc.flags          << platform.flags

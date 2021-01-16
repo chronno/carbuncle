@@ -48,3 +48,48 @@ MRuby::Build.new do |conf|
     conf.gem core: 'mruby-bin-debugger'
   end
 end
+
+# MRuby::CrossBuild.new('win32') do |conf|
+#   toolchain :gcc
+#   conf.cc.command = 'x86_64-w64-mingw32-gcc'
+#   conf.cxx.command = 'x86_64-w64-mingw32-g++'
+#   conf.linker.command = 'x86_64-w64-mingw32-gcc'
+#   conf.archiver.command = 'x86_64-w64-mingw32-ar'
+#   conf.linker.libraries += %w[wsock32 ws2_32]
+#   conf.exts.executable = '.exe'
+#   conf.cc.flags << '-DPCRE_STATIC'
+#   conf.linker.flags += %w[-static-libgcc -static-libstdc++]
+#   add_core_gems(conf)
+#   add_external_gems(conf)
+#   add_carbuncle_gems(conf)
+# end
+
+MRuby::CrossBuild.new('emscripten') do |conf|
+  toolchain :clang
+  conf.gembox 'default'
+  conf.cc.command = 'emcc'
+  conf.cc.flags = [
+    '-s ASYNCIFY=1',
+    '-s WASM=0',
+    '-s USE_GLFW=3',
+    '--use-preload-plugins',
+    '-s FORCE_FILESYSTEM=1',
+    '-O3'
+  ]
+  conf.exts.executable = '.html'
+  conf.linker.command = 'emcc'
+  conf.linker.flags = [
+    '-s ASYNCIFY=1',
+    '-s WASM=0',
+    '-s USE_GLFW=3',
+    '--use-preload-plugins',
+    '-s FORCE_FILESYSTEM=1',
+    '-O3'
+  ]
+  
+  conf.archiver.command = 'emar'
+  
+  add_core_gems(conf)
+  add_external_gems(conf)
+  add_carbuncle_gems(conf)
+end

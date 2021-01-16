@@ -1,0 +1,8 @@
+SET(CMAKE_C_COMPILER   emcc)
+SET(CMAKE_CXX_COMPILER em++)
+if(NOT DEFINED CMAKE_AR)
+  find_program(CMAKE_AR NAMES emar)
+endif()
+if(NOT DEFINED CMAKE_RANLIB)
+  find_program(CMAKE_RANLIB NAMES emranlib)
+endif()
